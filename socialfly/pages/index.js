@@ -19,6 +19,7 @@ export default function Home() {
         <PhoneIcon className="w-3/6 absolute -left-24 bottom-4 opacity-90" />
         <MacImage className="w-[400px]"/>
       </div>
+      
     </main>
   );
 }
