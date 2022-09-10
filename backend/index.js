@@ -41,7 +41,7 @@ const getLatestTweets = async (keywords, type="recent") => {
     }
 
     sum /= response.length
-    return {...response, aggregateSentimate: sum};
+    return {...response, aggregateSentimate: sum, numTweets: response.length};
   })
   .catch(function (error) {
     console.log(error);
