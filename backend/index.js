@@ -3,21 +3,19 @@ const axios = require("axios")
 const natural = require("natural")
 const {preProcess} = require("./model/util.js")
 
-const API_SECRET = "FLARGffUCG6uvE0LbT21q4I5YPyLw2UAqbb1fkU1PpvQSpmKuk"
+//const API_SECRET = "FLARGffUCG6uvE0LbT21q4I5YPyLw2UAqbb1fkU1PpvQSpmKuk"
+//const API_KEY = "WVP6eAVUNaHHf3w7NSY0FxBGo"
 const BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAMasgwEAAAAA3gWGg7zbD%2BpENv2AN0qEW61KQ4I%3DNWFlE482Xh0JY12OvtOX1o4K1F2qLDN4pOVSt6yrCU2Xh6sQP1"
-const API_KEY = "WVP6eAVUNaHHf3w7NSY0FxBGo"
 
 const app = express()
-var sentimentModel = null
-
 
 const analyzeTweet = async (tweet) => {
   let preProcessedTweet = preProcess(tweet)
 
   const Sentianalyzer = new natural.SentimentAnalyzer('English', natural.PorterStemmer, 'afinn');
   const analysis_score = Sentianalyzer.getSentiment(preProcessedTweet);
-  console.log("Sentiment Score: ",analysis_score);
-  return analysis_score
+  //console.log("Sentiment Score: ",analysis_score);
+  return Math.tanh(sentiment*2)
 }
 
 const getLatestTweets = async (keywords) => {
@@ -63,12 +61,9 @@ app.get("/getTweets", async (req, res) => {
 
 app.get("/testSentiment", async (req, res) => {
   let sentiment = await analyzeTweet(req.query.text);
-  res.json({input: req.query.text, score: sentiment, normalized: Math.tanh(sentiment*2)})
+  res.json({input: req.query.text, score: Math.tanh(sentiment*2)})
 })
 
 app.listen(5000, async () => {
-  let sentiment = await analyzeTweet("i love and hate the iphone!")
-  console.log(sentiment)
-
   console.log("app live on port 5000")
 })
