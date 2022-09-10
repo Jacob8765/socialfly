@@ -5,8 +5,8 @@
 .sky-gradient {
   background: linear-gradient(
     270deg,
-    hsl(220, 91%, 43%) -18.43%,
-    #6e9ed6 80.08%
+    #FC813C 50.75%, 
+    #6E9ED6 66.34%
   );
   background-clip: text;
   -webkit-text-fill-color: transparent;

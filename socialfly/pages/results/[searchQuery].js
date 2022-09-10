@@ -58,15 +58,18 @@ export default function Results() {
             <div className="space-y-2 grid justify-around">
               <CommonWords
                 data={["Hate", "Love", "Peace", "Test", "Set"]}
-                boxClassName="bg-red-500"
+                boxClassName="bg-[#FC813C]"
+                title="Negative"
               />
               <CommonWords
                 data={["Hate", "Love", "Peace", "Test", "Set"]}
-                boxClassName="bg-blue-500"
+                boxClassName="bg-[#50A5DC]"
+                title="Positive"
               />
               <CommonWords
                 data={["Hate", "Love", "Peace", "Test", "Set"]}
-                boxClassName="bg-red-500"
+                boxClassName="bg-[#6C6A6A]"
+                title = "Neutral"
               />
             </div>
           </section>
