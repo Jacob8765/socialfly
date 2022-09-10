@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.sky-gradient {
+    background: linear-gradient(270deg, hsl(220, 91%, 43%) -18.43%, #6E9ED6 80.08%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
