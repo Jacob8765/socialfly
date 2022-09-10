@@ -2,12 +2,14 @@ const express = require("express")
 const axios = require("axios")
 const natural = require("natural")
 const {preProcess} = require("./util.js")
+const cors = require("cors")
 
 //const API_SECRET = "FLARGffUCG6uvE0LbT21q4I5YPyLw2UAqbb1fkU1PpvQSpmKuk"
 //const API_KEY = "WVP6eAVUNaHHf3w7NSY0FxBGo"
 const BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAMasgwEAAAAA3gWGg7zbD%2BpENv2AN0qEW61KQ4I%3DNWFlE482Xh0JY12OvtOX1o4K1F2qLDN4pOVSt6yrCU2Xh6sQP1"
 
 const app = express()
+app.use(cors())
 
 //takes in a string, outputs a sentiment score between -1 and 1
 const analyzeTweet = async (tweet) => {
@@ -20,8 +22,8 @@ const analyzeTweet = async (tweet) => {
 }
 
 //uses twitter api, to get the latest tweets that have the keywords passed in
-const getLatestTweets = async (keywords) => {
-  const url = `https://api.twitter.com/2/tweets/search/recent?query=${keywords}&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id`
+const getLatestTweets = async (keywords, type="recent") => {
+  const url = `https://api.twitter.com/2/tweets/search/${type}?query=${keywords}&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id`
 
   let res = axios.get(url, {
     headers: {
@@ -69,23 +71,20 @@ app.get("/getTweets", async (req, res) => {
 
 //gets the keywords and calls the latesttweets function by passing the keywords
 app.get("/getUserSentiment", async (req, res) => {
-  const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${req.query.username}&tweet.fields=text`
-
-  console.log(req.query.username)
   let username = req.query.username
+  const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${username}&tweet.fields=text`
 
-  let response = axios.get(url, {
+  axios.get(url, {
     headers: {
       authorization: `Bearer ${BEARER_TOKEN}`,
     }
   })
-  .then(function (data) {
-    console.log(data)
-    res.json(data)
+  .then(function (response) {
+    console.log(response.data.data)
+    res.send(response.data.data)
   }).catch((e) => {
     throw e
   })
-
 })
 
 // route to test the sentiment score by typing an arbtrary string
