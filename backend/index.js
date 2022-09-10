@@ -74,17 +74,24 @@ app.get("/getUserSentiment", async (req, res) => {
   let username = req.query.username
   const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${username}&tweet.fields=text`
 
-  axios.get(url, {
+  let aggregate = axios.get(url, {
     headers: {
       authorization: `Bearer ${BEARER_TOKEN}`,
     }
   })
-  .then(function (response) {
-    console.log(response.data.data)
-    res.send(response.data.data)
+  .then(async (response) => {
+    let aggregateSentimate = 0
+    response.data.data.forEach(async tweet => {
+      sentimate = await analyzeTweet(tweet.text)
+      console.log(tweet.text, sentimate)
+      aggregateSentimate += sentimate / response.data.data.length
+    })
+    return aggregateSentimate
   }).catch((e) => {
     throw e
   })
+
+  res.send({aggregateSentimate: aggregate})
 })
 
 // route to test the sentiment score by typing an arbtrary string
@@ -94,6 +101,6 @@ app.get("/testSentiment", async (req, res) => {
 })
 
 //starts server
-app.listen(5000, async () => {
-  console.log("app live on port 5000")
+app.listen(8000, async () => {
+  console.log("app live on port 8000")
 })
