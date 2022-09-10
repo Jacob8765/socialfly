@@ -14,16 +14,25 @@ app.use(cors())
 //takes in a string, outputs a sentiment score between -1 and 1
 const analyzeTweet = async (tweet) => {
   let preProcessedTweet = preProcess(tweet)
+  let keywords = []
 
   const Sentianalyzer = new natural.SentimentAnalyzer('English', natural.PorterStemmer, 'afinn');
   const analysis_score = Sentianalyzer.getSentiment(preProcessedTweet);
-  //console.log("Sentiment Score: ",analysis_score);
-  return Math.tanh(analysis_score*2)
+  
+  preProcessedTweet.map((word, i) => {
+    let score = Sentianalyzer.getSentiment([word])
+    if (i > 0 && (score == 0 && Math.abs(Sentianalyzer.getSentiment([preProcessedTweet[i-1]])) >= 0.9)) {
+      console.log("adding to keywords", word)
+      keywords.push(word)
+    }
+  })
+
+  return {score: Math.tanh(analysis_score*2), keywords}
 }
 
 //uses twitter api, to get the latest tweets that have the keywords passed in
 const getLatestTweets = async (keywords, type="recent") => {
-  const url = `https://api.twitter.com/2/tweets/search/${type}?query=${keywords} lang:en&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id`
+  const url = `https://api.twitter.com/2/tweets/search/${type}?query=${keywords} lang:en&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id&max_results=50`
 
   let res = axios.get(url, {
     headers: {
@@ -33,15 +42,29 @@ const getLatestTweets = async (keywords, type="recent") => {
   .then(async function (res) {
     let response = res.data.data
     let sum = 0;
+    let positiveKeywords = []
+    let negativeKeywords = []
 
-    for (i=0; i< response.length; i++){
-      let sentiment = await analyzeTweet(response[i].text);
+
+    for (i=0; i<response.length; i++){
+      let analysis = await analyzeTweet(response[i].text);
+      let sentiment = analysis.score
+      let key = analysis.keywords
+
+      console.log(sentiment, key)
+      if (sentiment >= 0.3) {
+        console.log("adding to positive", key)
+        positiveKeywords = positiveKeywords.concat(key)
+      } else if (sentiment <= -0.3) {
+        console.log("adding to negative", key)
+        negativeKeywords = negativeKeywords.concat(key)
+      }
       response[i].sentiment = sentiment; 
       sum += sentiment;
     }
 
     sum /= response.length
-    return {...response, aggregateSentimate: sum, numTweets: response.length};
+    return {...response, aggregateSentimate: sum, numTweets: response.length, positiveKeywords, negativeKeywords};
   })
   .catch(function (error) {
     console.log(error);
@@ -50,7 +73,6 @@ const getLatestTweets = async (keywords, type="recent") => {
 
   return res
 }
-
 
 app.get("/", async (req, res) => {
   res.json({status: 200, version: 0.1})
