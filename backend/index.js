@@ -1,24 +1,23 @@
 const express = require("express")
 const axios = require("axios")
-const tf = require("@tensorflow/tfjs")
-
-//import sentiment model
-const model = require("model/model.json")
-const metadata = require("model/metadata.json")
+const natural = require("natural")
+const {preProcess} = require("./model/util.js")
 
 const API_SECRET = "FLARGffUCG6uvE0LbT21q4I5YPyLw2UAqbb1fkU1PpvQSpmKuk"
 const BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAMasgwEAAAAA3gWGg7zbD%2BpENv2AN0qEW61KQ4I%3DNWFlE482Xh0JY12OvtOX1o4K1F2qLDN4pOVSt6yrCU2Xh6sQP1"
 const API_KEY = "WVP6eAVUNaHHf3w7NSY0FxBGo"
 
 const app = express()
-const sentimentModel = null
+var sentimentModel = null
 
-const loadModel = async () => {
-  try {
-    sentimentModel = await tf.loadLayersModel(model)
-  } catch {
-    throw "Error loading model"
-  }
+
+const analyzeTweet = async (tweet) => {
+  let preProcessedTweet = preProcess(tweet)
+
+  const Sentianalyzer = new natural.SentimentAnalyzer('English', natural.PorterStemmer, 'afinn');
+  const analysis_score = Sentianalyzer.getSentiment(preProcessedTweet);
+  console.log("Sentiment Score: ",analysis_score);
+  return analysis_score
 }
 
 const getLatestTweets = async (keywords) => {
@@ -29,8 +28,14 @@ const getLatestTweets = async (keywords) => {
       authorization: `Bearer ${BEARER_TOKEN}`,
     }
   })
-  .then(function (response) {
-    return response.data
+  .then(async function (res) {
+    let response = res.data.data
+
+    for (i=0; i< response.length; i++){
+      let sentiment = await analyzeTweet(response[i].text);
+      response[i].sentiment = sentiment; 
+    }
+    return response;
   })
   .catch(function (error) {
     console.log(error);
@@ -56,6 +61,14 @@ app.get("/getTweets", async (req, res) => {
   }
 })
 
-app.listen(5000, () => {
+app.get("/testSentiment", async (req, res) => {
+  let sentiment = await analyzeTweet(req.query.text);
+  res.json({input: req.query.text, score: sentiment, normalized: Math.tanh(sentiment*2)})
+})
+
+app.listen(5000, async () => {
+  let sentiment = await analyzeTweet("i love and hate the iphone!")
+  console.log(sentiment)
+
   console.log("app live on port 5000")
 })
