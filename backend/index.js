@@ -30,12 +30,16 @@ const getLatestTweets = async (keywords) => {
   })
   .then(async function (res) {
     let response = res.data.data
+    let sum = 0;
 
     for (i=0; i< response.length; i++){
       let sentiment = await analyzeTweet(response[i].text);
       response[i].sentiment = sentiment; 
+      sum += sentiment;
     }
-    return response;
+
+    sum /= response.length
+    return {...response, aggregateSentimate: sum};
   })
   .catch(function (error) {
     console.log(error);
