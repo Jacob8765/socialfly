@@ -74,13 +74,13 @@ app.get("/getUserSentiment", async (req, res) => {
   let username = req.query.username
   const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${username}&tweet.fields=text`
 
-  let aggregate = axios.get(url, {
+  let aggregateSentimate = 0
+  await axios.get(url, {
     headers: {
       authorization: `Bearer ${BEARER_TOKEN}`,
     }
   })
   .then(async (response) => {
-    let aggregateSentimate = 0
     response.data.data.forEach(async tweet => {
       sentimate = await analyzeTweet(tweet.text)
       console.log(tweet.text, sentimate)
@@ -91,7 +91,7 @@ app.get("/getUserSentiment", async (req, res) => {
     throw e
   })
 
-  res.send({aggregateSentimate: aggregate})
+  res.send({aggregateSentimate})
 })
 
 // route to test the sentiment score by typing an arbtrary string
