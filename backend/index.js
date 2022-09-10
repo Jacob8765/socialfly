@@ -11,6 +11,15 @@ const BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAMasgwEAAAAA3gWGg7zbD%2BpENv2AN0qEW61K
 const API_KEY = "WVP6eAVUNaHHf3w7NSY0FxBGo"
 
 const app = express()
+const sentimentModel = null
+
+const loadModel = async () => {
+  try {
+    sentimentModel = await tf.loadLayersModel(model)
+  } catch {
+    throw "Error loading model"
+  }
+}
 
 const getLatestTweets = async (keywords) => {
   const url = `https://api.twitter.com/2/tweets/search/recent?query=${keywords}&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id`
