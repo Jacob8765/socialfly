@@ -28,8 +28,14 @@ const getLatestTweets = async (keywords) => {
       authorization: `Bearer ${BEARER_TOKEN}`,
     }
   })
-  .then(function (response) {
-    return response.data
+  .then(async function (res) {
+    let response = res.data.data
+
+    for (i=0; i< response.length; i++){
+      let sentiment = await analyzeTweet(response[i].text);
+      response[i].sentiment = sentiment; 
+    }
+    return response;
   })
   .catch(function (error) {
     console.log(error);
