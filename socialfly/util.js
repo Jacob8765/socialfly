@@ -1,7 +1,7 @@
 export function getNumPositive(tweetData) {
   let numPositive = 0;
   for (let i = 0; i < tweetData.numTweets; i++) {
-    if (tweetData[i].sentiment >= 0.5) numPositive++;
+    if (tweetData[i].sentiment > 0.3) numPositive++;
   }
 
   return numPositive;
@@ -10,7 +10,7 @@ export function getNumPositive(tweetData) {
 export function getNumNegative(tweetData) {
   let numNegative = 0;
   for (let i = 0; i < tweetData.numTweets; i++) {
-    if (tweetData[i].sentiment <= -0.5) numNegative++;
+    if (tweetData[i].sentiment < -0.1) numNegative++;
   }
 
   return numNegative;
@@ -19,7 +19,7 @@ export function getNumNegative(tweetData) {
 export function getNumNeutral(tweetData) {
   let numNeutral = 0;
   for (let i = 0; i < tweetData.numTweets; i++) {
-    if (tweetData[i].sentiment <= 0.5 && tweetData[i].sentiment >= -0.5)
+    if (tweetData[i].sentiment <= 0.3 && tweetData[i].sentiment >= -0.1)
       numNeutral++;
   }
 
