@@ -9,7 +9,7 @@ function TestChart(props) {
       {
         label: "SocialFly",
         data: props.data,
-        backgroundColor: props.backgroundColor,
+        backgroundColor: props.backgroundColors,
         borderColor: props.borderColor,
         hoverOffset: 1,
       },

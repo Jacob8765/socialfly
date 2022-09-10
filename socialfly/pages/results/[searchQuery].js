@@ -49,6 +49,8 @@ export default function Results() {
           <section className="flex flex-wrap gap-2">
             <DonutChart
               labels={["Positive", "Neutral", "Negative"]}
+              title={`Tweet Pie Chart: ${searchQuery}`}
+              backgroundColors={["#50A5DC", "#6C6A6A", "#FC813C"]}
               data={[
                 getNumPositive(response),
                 getNumNeutral(response),
