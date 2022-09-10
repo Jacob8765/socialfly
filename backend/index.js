@@ -67,6 +67,27 @@ app.get("/getTweets", async (req, res) => {
   }
 })
 
+//gets the keywords and calls the latesttweets function by passing the keywords
+app.get("/getUserSentiment", async (req, res) => {
+  const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${req.query.username}&tweet.fields=text`
+
+  console.log(req.query.username)
+  let username = req.query.username
+
+  let response = axios.get(url, {
+    headers: {
+      authorization: `Bearer ${BEARER_TOKEN}`,
+    }
+  })
+  .then(function (data) {
+    console.log(data)
+    res.json(data)
+  }).catch((e) => {
+    throw e
+  })
+
+})
+
 // route to test the sentiment score by typing an arbtrary string
 app.get("/testSentiment", async (req, res) => {
   let sentiment = await analyzeTweet(req.query.text);
