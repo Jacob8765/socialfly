@@ -17,6 +17,7 @@ const analyzeTweet = async (tweet) => {
   const Sentianalyzer = new natural.SentimentAnalyzer('English', natural.PorterStemmer, 'afinn');
   const analysis_score = Sentianalyzer.getSentiment(preProcessedTweet);
   console.log("Sentiment Score: ",analysis_score);
+  return analysis_score
 }
 
 const getLatestTweets = async (keywords) => {
@@ -52,6 +53,11 @@ app.get("/getTweets", async (req, res) => {
   } catch {
     res.sendStatus(500)
   }
+})
+
+app.get("/testSentiment", async (req, res) => {
+  let sentiment = await analyzeTweet(req.query.text);
+  res.json({input: req.query.text, score: sentiment, normalized: Math.tanh(sentiment*2)})
 })
 
 app.listen(5000, async () => {
