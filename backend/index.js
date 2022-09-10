@@ -9,6 +9,7 @@ const BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAMasgwEAAAAA3gWGg7zbD%2BpENv2AN0qEW61K
 
 const app = express()
 
+//takes in a string, outputs a sentiment score between -1 and 1
 const analyzeTweet = async (tweet) => {
   let preProcessedTweet = preProcess(tweet)
 
@@ -18,6 +19,7 @@ const analyzeTweet = async (tweet) => {
   return Math.tanh(sentiment*2)
 }
 
+//uses twitter api, to get the latest tweets that have the keywords passed in
 const getLatestTweets = async (keywords) => {
   const url = `https://api.twitter.com/2/tweets/search/recent?query=${keywords}&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id`
 
@@ -43,10 +45,12 @@ const getLatestTweets = async (keywords) => {
   return res
 }
 
+
 app.get("/", async (req, res) => {
   res.json({status: 200, version: 0.1})
 })
 
+//gets the keywords and calls the latesttweets function by passing the keywords
 app.get("/getTweets", async (req, res) => {
   console.log(req.query.keywords)
   let keywords = req.query.keywords.replace(",", " ")
@@ -59,11 +63,13 @@ app.get("/getTweets", async (req, res) => {
   }
 })
 
+// route to test the sentiment score by typing an arbtrary string
 app.get("/testSentiment", async (req, res) => {
   let sentiment = await analyzeTweet(req.query.text);
   res.json({input: req.query.text, score: Math.tanh(sentiment*2)})
 })
 
+//starts server
 app.listen(5000, async () => {
   console.log("app live on port 5000")
 })
