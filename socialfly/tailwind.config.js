@@ -11,6 +11,7 @@ module.exports = {
         "light-blue": "#6E9ED6",
         "dark-blue": "#0A65D0",
         "cement-gray": "#6C6A6A",
+        "ruby-red": "#DD3535",
       },
     },
     fontFamily: {

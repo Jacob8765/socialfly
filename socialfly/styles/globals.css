@@ -3,7 +3,20 @@
 @tailwind utilities;
 
 .sky-gradient {
-    background: linear-gradient(270deg, hsl(220, 91%, 43%) -18.43%, #6E9ED6 80.08%);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: linear-gradient(
+    270deg,
+    hsl(220, 91%, 43%) -18.43%,
+    #6e9ed6 80.08%
+  );
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dynamic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 20px;
+  width: 80vw;
+  justify-content: center;
+  justify-items: center;
 }
