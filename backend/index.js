@@ -23,7 +23,7 @@ const analyzeTweet = async (tweet) => {
 
 //uses twitter api, to get the latest tweets that have the keywords passed in
 const getLatestTweets = async (keywords, type="recent") => {
-  const url = `https://api.twitter.com/2/tweets/search/${type}?query=${keywords}&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id`
+  const url = `https://api.twitter.com/2/tweets/search/${type}?query=${keywords} lang:en&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id`
 
   let res = axios.get(url, {
     headers: {
@@ -72,7 +72,7 @@ app.get("/getTweets", async (req, res) => {
 //gets the keywords and calls the latesttweets function by passing the keywords
 app.get("/getUserSentiment", async (req, res) => {
   let username = req.query.username
-  const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${username}&tweet.fields=text`
+  const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${username} lang:en&tweet.fields=text`
 
   let aggregateSentimate = 0
   await axios.get(url, {
@@ -81,7 +81,8 @@ app.get("/getUserSentiment", async (req, res) => {
     }
   })
   .then(async (response) => {
-    response.data.data.forEach(async tweet => {
+    console.log(response.data)
+    response.data.data.map(async tweet => {
       sentimate = await analyzeTweet(tweet.text)
       console.log(tweet.text, sentimate)
       aggregateSentimate += sentimate / response.data.data.length
