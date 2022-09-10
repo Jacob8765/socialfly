@@ -1,7 +1,7 @@
 const express = require("express")
 const axios = require("axios")
 const natural = require("natural")
-const {preProcess} = require("./model/util.js")
+const {preProcess} = require("./util.js")
 
 //const API_SECRET = "FLARGffUCG6uvE0LbT21q4I5YPyLw2UAqbb1fkU1PpvQSpmKuk"
 //const API_KEY = "WVP6eAVUNaHHf3w7NSY0FxBGo"
@@ -16,7 +16,7 @@ const analyzeTweet = async (tweet) => {
   const Sentianalyzer = new natural.SentimentAnalyzer('English', natural.PorterStemmer, 'afinn');
   const analysis_score = Sentianalyzer.getSentiment(preProcessedTweet);
   //console.log("Sentiment Score: ",analysis_score);
-  return Math.tanh(sentiment*2)
+  return Math.tanh(analysis_score*2)
 }
 
 //uses twitter api, to get the latest tweets that have the keywords passed in
