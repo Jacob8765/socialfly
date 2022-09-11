@@ -36,7 +36,7 @@ function SearchBar(props) {
         }}
       >
         <option value="recency">Newest</option>
-        <option value="relevency">Most Popular</option>
+        <option value="relevancy">Most Popular</option>
       </select>
     </form>
   );

@@ -14,8 +14,8 @@ import axios from "axios";
 
 import CommonWords from "../../../components/CommonWords";
 import DonutChart from "../../../components/DonutChart";
-import BarGraph from "../../../components/BarGraph";
 import BubbleChart from "../../../components/BubbleChart";
+import PolarChart from "../../../components/PolarChart";
 
 export default function Results() {
   const router = useRouter();
@@ -58,7 +58,7 @@ export default function Results() {
               {searchQuery}
             </h1>
           </div>
-          <section className="flex flex-wrap gap-2">
+          <section className="flex flex-wrap gap-4 justify-center">
             <DonutChart
               labels={["Positive", "Neutral", "Negative"]}
               title={`Tweet Pie Chart: ${searchQuery}`}
@@ -70,6 +70,23 @@ export default function Results() {
               ]}
             />
             <BubbleChart data={getBubbleData(response)} />
+
+            <PolarChart
+              data={[
+                positiveLikes,
+                negativeLikes,
+                positiveRetweets,
+                negativeRetweets,
+              ]}
+              labels={[
+                "Positive Tweet Likes",
+                "Negative Tweet Likes",
+                "Positive Tweet Retweets",
+                "Negative Tweet Retweets",
+              ]}
+              backgroundColor={["#50A5DC", "#FC813C", "#50A5DC", "#FC813C"]}
+            />
+
             <div className="space-y-2 grid justify-around row-span-2">
               <CommonWords
                 data={response.negativeKeywords}
@@ -80,21 +97,6 @@ export default function Results() {
                 boxClassName="bg-[#50A5DC]"
                 title="Positive"
                 data={response.positiveKeywords}
-              />
-              <BarGraph
-                data={[
-                  positiveLikes,
-                  negativeLikes,
-                  positiveRetweets,
-                  negativeRetweets,
-                ]}
-                labels={[
-                  "Positive Tweet Likes",
-                  "Negative Tweet Likes",
-                  "Positive Tweet Retweets",
-                  "Negative Tweet Retweets",
-                ]}
-                backgroundColors={["#50A5DC", "#FC813C", "#50A5DC", "#FC813C"]}
               />
             </div>
           </section>

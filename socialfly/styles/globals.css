@@ -3,20 +3,15 @@
 @tailwind utilities;
 
 .sky-gradient {
-  background: linear-gradient(
-    270deg,
-    #FC813C 50.75%, 
-    #6E9ED6 66.34%
-  );
+  background: linear-gradient(270deg, #fc813c 50.75%, #6e9ed6 66.34%);
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .dynamic-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-gap: 20px;
-  width: 80vw;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-gap: 10px;
   justify-content: center;
   justify-items: center;
 }
