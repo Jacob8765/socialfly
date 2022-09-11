@@ -3,7 +3,9 @@ import React from "react";
 function CommonWords(props) {
   return (
     <div className="bg-white p-1 w-[500px]">
-      <h1 className="font-bold font-inter">Common {props.title} words:</h1>
+      <h1 className="font-bold font-inter text-cement-gray">
+        Common {props.title} words:
+      </h1>
       <div className="flex flex-row flex-wrap">
         {props.data?.map((element) => {
           return (

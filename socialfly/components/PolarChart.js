@@ -33,6 +33,10 @@ function Polar(props) {
               display: true,
               text: props.title,
             },
+            legend: {
+              display: true,
+              position: "bottom",
+            },
           },
         }}
       />

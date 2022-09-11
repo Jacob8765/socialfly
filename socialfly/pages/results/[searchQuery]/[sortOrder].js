@@ -28,15 +28,16 @@ export default function Results() {
   let { positiveRetweets, negativeRetweets } = getNumberRetweets(response);
 
   async function getData() {
-    let url = `http://localhost:8000/getTweets?keywords=${searchQuery}&sort=${sortOrder}`
-    if (searchQuery[0] == "@") { //if the query is a username...
-      url = `http://localhost:8000/getTweets?username=${searchQuery.substring(1)}&sort=${sortOrder}`
+    let url = `http://localhost:8000/getTweets?keywords=${searchQuery}&sort=${sortOrder}`;
+    if (searchQuery[0] == "@") {
+      //if the query is a username...
+      url = `http://localhost:8000/getTweets?username=${searchQuery.substring(
+        1
+      )}&sort=${sortOrder}`;
     }
 
     try {
-      let rawResponse = await axios.get(
-        url
-      );
+      let rawResponse = await axios.get(url);
       setLoading(true);
       if (rawResponse) {
         setLoading(false);
@@ -58,10 +59,14 @@ export default function Results() {
       {!loading && (
         <>
           <div className="bg-white max-w-[1920px] p-3 mb-2">
-            <h2 className="text-4xl">Query:</h2>
-            <h1 className="text-5xl font-inter font-bold pb-2 sky-gradient">
-              {searchQuery}
-            </h1>
+            <div className="w-fit">
+              <h1 className="text-5xl font-inter font-bold pb-2 sky-gradient">
+                Current Query: {searchQuery}
+              </h1>
+              <h3 className="font-montserrat">
+                Number of Tweets: {response.numTweets}
+              </h3>
+            </div>
           </div>
           <section className="flex flex-wrap gap-4 justify-center">
             <DonutChart
@@ -92,7 +97,12 @@ export default function Results() {
                 "Positive Tweet Retweets",
                 "Negative Tweet Retweets",
               ]}
-              backgroundColor={["#50A5DC", "#FC813C", "#50A5DC", "#FC813C"]}
+              backgroundColor={[
+                "rgb(80, 165, 220, .60)",
+                "rgba(252, 129, 60, .60)",
+                "rgba(80, 165, 220, .60)",
+                "rgba(252, 129, 60, .60)",
+              ]}
               title="Engagement Numbers"
             />
 
