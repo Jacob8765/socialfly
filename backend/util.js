@@ -90,9 +90,12 @@ const findMostRelevantKeywords = (keywords) => {
     const sorted = keywords.sort()
     let res = []
 
-    for (let i = 0; i < Math.min(7, sorted.length); i++) {
-        if (i == 0 || sorted[i] != sorted[i-1]) {
+    for (let i = 0; i < sorted.length; i++) {
+        if ((i == 0 || sorted[i] != sorted[i-1]) && sorted[i].indexOf("http") == -1) {
             res.push(sorted[i])
+            if (res.length >= 6) {
+                break
+            }
         }
     }
 
