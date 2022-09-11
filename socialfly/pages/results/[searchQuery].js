@@ -67,21 +67,16 @@ export default function Results() {
                 getNumNegative(response),
               ]}
             />
-            <div className="space-y-2 grid justify-around flex-grow">
+            <div className="space-y-2 grid justify-around row-span-2">
               <CommonWords
-                data={["Hate", "Love", "Peace", "Test", "Set"]}
+                data={response.negativeKeywords}
                 boxClassName="bg-[#FC813C]"
                 title="Negative"
               />
               <CommonWords
-                data={["Hate", "Love", "Peace", "Test", "Set"]}
                 boxClassName="bg-[#50A5DC]"
                 title="Positive"
-              />
-              <CommonWords
-                data={["Hate", "Love", "Peace", "Test", "Set"]}
-                boxClassName="bg-[#6C6A6A]"
-                title="Neutral"
+                data={response.positiveKeywords}
               />
               <BarGraph
                 data={[
