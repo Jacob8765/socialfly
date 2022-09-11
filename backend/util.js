@@ -77,17 +77,28 @@ const preProcess = text => {
 
   data = data.join(' ');
 
-  const tokenConstructor = new natural.WordTokenizer();
-  const tokenizedData = tokenConstructor.tokenize(data);
+  //const tokenConstructor = new natural.WordTokenizer();
+  //const tokenizedData = tokenConstructor.tokenize(data);
   //console.log("Tokenized Data: ",tokenizedData);
 
   // Remove Stopwords
-  const filteredData = stopword.removeStopwords(tokenizedData);
-  return filteredData
+  //const filteredData = stopword.removeStopwords(tokenizedData);
+  return data
+}
+
+const parseKeywords = (tweet) => {
+    const data = preProcess(tweet)
+    const tokenConstructor = new natural.WordTokenizer();
+    const tokenizedData = tokenConstructor.tokenize(data);
+    console.log("Tokenized Data: ",tokenizedData);
+
+    // Remove Stopwords
+    const filteredData = stopword.removeStopwords(tokenizedData);
+    return filteredData
 }
 
 const findMostRelevantKeywords = (keywords) => {
-    const sorted = keywords.sort()
+    const sorted = keywords//.sort()
     let res = []
 
     for (let i = 0; i < sorted.length; i++) {
@@ -102,4 +113,4 @@ const findMostRelevantKeywords = (keywords) => {
     return res
 }
 
-module.exports = {preProcess, findMostRelevantKeywords}
+module.exports = {preProcess, findMostRelevantKeywords, parseKeywords}
