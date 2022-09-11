@@ -1,7 +1,7 @@
 const express = require("express")
 const axios = require("axios")
 const natural = require("natural")
-const {preProcess} = require("./util.js")
+const {preProcess, findMostRelevantKeywords} = require("./util.js")
 const cors = require("cors")
 
 //const API_SECRET = "FLARGffUCG6uvE0LbT21q4I5YPyLw2UAqbb1fkU1PpvQSpmKuk"
@@ -21,7 +21,7 @@ const analyzeTweet = async (tweet) => {
   
   preProcessedTweet.map((word, i) => {
     let score = Sentianalyzer.getSentiment([word])
-    if (i > 0 && (score == 0 && Math.abs(Sentianalyzer.getSentiment([preProcessedTweet[i-1]])) >= 0.9)) {
+    if (word.length > 5 && i > 0 && (score == 0 && Math.abs(Sentianalyzer.getSentiment([preProcessedTweet[i-1]])) >= 0.9)) {
       console.log("adding to keywords", word)
       keywords.push(word)
     }
@@ -64,7 +64,7 @@ const getLatestTweets = async (keywords, type="recent") => {
     }
 
     sum /= response.length
-    return {...response, aggregateSentimate: sum, numTweets: response.length, positiveKeywords, negativeKeywords};
+    return {...response, aggregateSentimate: sum, numTweets: response.length, positiveKeywords: findMostRelevantKeywords(positiveKeywords), negativeKeywords: findMostRelevantKeywords(negativeKeywords)};
   })
   .catch(function (error) {
     console.log(error);
