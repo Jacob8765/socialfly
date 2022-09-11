@@ -31,8 +31,8 @@ const analyzeTweet = async (tweet) => {
 }
 
 //uses twitter api, to get tweets that have the keywords passed in
-const getTweets = async (keywords, sort="recency") => {
-  const url = `https://api.twitter.com/2/tweets/search/recent?query=${keywords} lang:en&sort_order=${sort}&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id&max_results=50`
+const getTweets = async (keywords, sort="recency", username=undefined) => {
+  const url = `https://api.twitter.com/2/tweets/search/recent?query=${keywords ? keywords : 'from:' + username} lang:en&sort_order=${sort}&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id&max_results=50`
 
   let res = await axios.get(url, {
     headers: {
@@ -77,11 +77,12 @@ app.get("/", async (req, res) => {
 
 //gets the keywords and calls the latesttweets function by passing the keywords
 app.get("/getTweets", async (req, res) => {
-  let keywords = req.query.keywords.replace(",", " ")
+  let keywords = req.query.keywords
+  let username = req.query.username
   let sort = req.query.sort
 
   try {
-    const tweets = await getTweets(keywords, sort)
+    const tweets = await getTweets(keywords, sort, username)
     res.json(tweets)
   } catch {
     res.sendStatus(500)
