@@ -1,6 +1,5 @@
 const express = require("express")
 const axios = require("axios")
-const natural = require("natural")
 const { preProcess, findMostRelevantKeywords, parseKeywords } = require("./util.js")
 const cors = require("cors")
 
@@ -11,7 +10,6 @@ const BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAMasgwEAAAAA3gWGg7zbD%2BpENv2AN0qEW61K
 
 const app = express()
 app.use(cors())
-const model = null
 
 //takes in a string, outputs a sentiment score between -1 and 1
 const analyzeTweet = async (tweet) => {

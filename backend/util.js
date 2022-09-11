@@ -1,7 +1,6 @@
 const stopword = require("stopword");
 const natural = require("natural");
 const { mainModule } = require("process");
-const e = require("express");
   
 // For conversion of contractions to standard lexicon
 const wordDict = {
@@ -90,7 +89,6 @@ const parseKeywords = (tweet) => {
     const data = preProcess(tweet)
     const tokenConstructor = new natural.WordTokenizer();
     const tokenizedData = tokenConstructor.tokenize(data);
-    console.log("Tokenized Data: ",tokenizedData);
 
     // Remove Stopwords
     const filteredData = stopword.removeStopwords(tokenizedData);
