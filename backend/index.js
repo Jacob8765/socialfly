@@ -31,8 +31,8 @@ const analyzeTweet = async (tweet) => {
 }
 
 //uses twitter api, to get tweets that have the keywords passed in
-const getTweets = async (keywords, sort="recent") => {
-  const url = `https://api.twitter.com/2/tweets/search/${sort}?query=${keywords} lang:en&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id&max_results=50`
+const getTweets = async (keywords, sort="recency") => {
+  const url = `https://api.twitter.com/2/tweets/search/recent?query=${keywords} lang:en&sort_order=${sort}&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id&max_results=50`
 
   let res = await axios.get(url, {
     headers: {
