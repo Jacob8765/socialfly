@@ -2,7 +2,7 @@ import React from "react";
 
 function CommonWords(props) {
   return (
-    <div className="bg-white p-1 w-fit">
+    <div className="bg-white p-1 min-w-full">
       <h1 className="font-bold font-inter">Common {props.title} words:</h1>
       <div className="grid-cols-4 grid">
         {props.data.map((element) => {

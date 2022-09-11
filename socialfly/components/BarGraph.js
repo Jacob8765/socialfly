@@ -1,8 +1,8 @@
 import React from "react";
-import { Doughnut } from "react-chartjs-2";
-import Chart from "chart.js/auto";
 
-function TestChart(props) {
+import { Bar } from "react-chartjs-2";
+
+function BarGraph(props) {
   const data = {
     labels: props.labels,
     datasets: [
@@ -18,7 +18,7 @@ function TestChart(props) {
 
   return (
     <div className="bg-white max-w-[300px] h-fit">
-      <Doughnut
+      <Bar
         data={data}
         options={{
           plugins: {
@@ -30,6 +30,17 @@ function TestChart(props) {
               display: true,
               position: "bottom",
             },
+            scales: {
+              yAxes: [
+                {
+                  display: true,
+                  ticks: {
+                    suggestedMin: 0,
+                    behinAtZero: true,
+                  },
+                },
+              ],
+            },
           },
         }}
       />
@@ -37,4 +48,4 @@ function TestChart(props) {
   );
 }
 
-export default TestChart;
+export default BarGraph;

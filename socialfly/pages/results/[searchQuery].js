@@ -1,12 +1,19 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import { getNumPositive, getNumNegative, getNumNeutral } from "../../util";
+import {
+  getNumPositive,
+  getNumNegative,
+  getNumNeutral,
+  getNumberLikes,
+  getNumberRetweets,
+} from "../../util";
 
 import axios from "axios";
 
 import CommonWords from "../../components/CommonWords";
 import DonutChart from "../../components/DonutChart";
+import BarGraph from "../../components/BarGraph";
 
 export default function Results() {
   const router = useRouter();
@@ -14,6 +21,9 @@ export default function Results() {
 
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(false);
+
+  let { positiveLikes, negativeLikes } = getNumberLikes(response);
+  let { positiveRetweets, negativeRetweets } = getNumberRetweets(response);
 
   async function getData() {
     try {
@@ -37,7 +47,7 @@ export default function Results() {
   }, [router.isReady]);
 
   return (
-    <main className="bg-bage h-screen flex flex-col pl-10 pr-10">
+    <main className="bg-bage min-h-screen flex flex-col pl-10 pr-10">
       {!loading && (
         <>
           <div className="bg-white max-w-[1920px] p-3 mb-2">
@@ -57,7 +67,7 @@ export default function Results() {
                 getNumNegative(response),
               ]}
             />
-            <div className="space-y-2 grid justify-around">
+            <div className="space-y-2 grid justify-around flex-grow">
               <CommonWords
                 data={["Hate", "Love", "Peace", "Test", "Set"]}
                 boxClassName="bg-[#FC813C]"
@@ -71,7 +81,22 @@ export default function Results() {
               <CommonWords
                 data={["Hate", "Love", "Peace", "Test", "Set"]}
                 boxClassName="bg-[#6C6A6A]"
-                title = "Neutral"
+                title="Neutral"
+              />
+              <BarGraph
+                data={[
+                  positiveLikes,
+                  negativeLikes,
+                  positiveRetweets,
+                  negativeRetweets,
+                ]}
+                labels={[
+                  "Positive Tweet Likes",
+                  "Negative Tweet Likes",
+                  "Positive Tweet Retweets",
+                  "Negative Tweet Retweets",
+                ]}
+                backgroundColors={["#50A5DC", "#FC813C", "#50A5DC", "#FC813C"]}
               />
             </div>
           </section>
