@@ -7,17 +7,17 @@ import {
   getNumNeutral,
   getNumberLikes,
   getNumberRetweets,
-} from "../../util";
+} from "../../../util";
 
 import axios from "axios";
 
-import CommonWords from "../../components/CommonWords";
-import DonutChart from "../../components/DonutChart";
-import BarGraph from "../../components/BarGraph";
+import CommonWords from "../../../components/CommonWords";
+import DonutChart from "../../../components/DonutChart";
+import BarGraph from "../../../components/BarGraph";
 
 export default function Results() {
   const router = useRouter();
-  const { searchQuery } = router.query;
+  const { searchQuery, sortOrder } = router.query;
 
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(false);
@@ -28,7 +28,7 @@ export default function Results() {
   async function getData() {
     try {
       let rawResponse = await axios.get(
-        `http://localhost:8000/getTweets?keywords=${searchQuery}`
+        `http://localhost:8000/getTweets?keywords=${searchQuery}&sort=${sortOrder}`
       );
       setLoading(true);
       if (rawResponse) {
