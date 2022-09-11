@@ -1,6 +1,7 @@
 const stopword = require("stopword");
 const natural = require("natural");
 const { mainModule } = require("process");
+const e = require("express");
   
 // For conversion of contractions to standard lexicon
 const wordDict = {
@@ -65,7 +66,12 @@ const wordDict = {
 }
 
 const preProcess = text => {
-  let data = text.toLowerCase().replace(/[^a-zA-Z\s]+/g, '').split(' ');
+    if (text.toLowerCase().indexOf("http") != -1) {
+        console.log("has link", text)
+        console.log("after replacement", text.toLowerCase().replace(/(?:https?|ftp):\/\/[\n\S]+/g, ''))
+    }
+  console.log(text.toLowerCase())
+  let data = text.toLowerCase().replace(/[^a-zA-Z\s]+/g, '').replace(/(?:https?|ftp):\/\/[\n\S]+/g, '').replace(/(?<!\w)@[\w+]{1,15}\b/, '').split(' ');
   data.forEach((word, index) => {
       Object.keys(wordDict).forEach(key => {
           if (key === word.toLowerCase()) {
@@ -78,11 +84,11 @@ const preProcess = text => {
 
   const tokenConstructor = new natural.WordTokenizer();
   const tokenizedData = tokenConstructor.tokenize(data);
-  console.log("Tokenized Data: ",tokenizedData);
+  //console.log("Tokenized Data: ",tokenizedData);
 
   // Remove Stopwords
   const filteredData = stopword.removeStopwords(tokenizedData);
-  console.log("After removing stopwords: ",filteredData);
+  //console.log("After removing stopwords: ",filteredData);
 
   return filteredData
 }
