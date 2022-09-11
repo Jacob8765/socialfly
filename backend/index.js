@@ -31,7 +31,7 @@ const analyzeTweet = async (tweet) => {
 
 //uses twitter api, to get tweets that have the keywords passed in
 const getTweets = async (keywords, sort="recency", username=undefined) => {
-  const url = `https://api.twitter.com/2/tweets/search/recent?query=${keywords ? keywords : 'from:' + username} lang:en&sort_order=${sort}&tweet.fields=public_metrics,text&max_results=100`
+  const url = `https://api.twitter.com/2/tweets/search/recent?query=${keywords ? keywords : 'from:' + username} lang:en -is:retweet&sort_order=${sort}&tweet.fields=public_metrics,text&max_results=100`
 
   let res = await axios.get(url, {
     headers: {
@@ -87,9 +87,10 @@ app.get("/getTweets", async (req, res) => {
 })
 
 //gets the keywords and calls the latesttweets function by passing the keywords
-app.get("/getUserSentiment", async (req, res) => {
+/*app.get("/getUserSentiment", async (req, res) => {
   const username = req.query.username
-  const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${username} lang:en&tweet.fields=text`
+  const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${username} lang:en -is:retweet&tweet.fields=text`
+  console.log(url)
 
   let aggregateSentimate = 0 //average of the user's most recent 100 posts
   await axios.get(url, {
@@ -109,7 +110,7 @@ app.get("/getUserSentiment", async (req, res) => {
   })
 
   res.send({aggregateSentimate})
-})
+})*/
 
 // route to test the sentiment score by typing an arbtrary string
 app.get("/testSentiment", async (req, res) => {
