@@ -5,7 +5,7 @@ import { FaSearch } from "react-icons/fa";
 
 function SearchBar(props) {
   const [searchInput, setSearchInput] = useState();
-  const [sortOrder, setSortOrder] = useState("recency");
+  const [sortOrder, setSortOrder] = useState("relevancy");
 
   let router = useRouter();
 
@@ -16,9 +16,7 @@ function SearchBar(props) {
       className="bg-white w-[450px] h-12 rounded-lg flex items-center font-montserrat px-4 text-[#FC813C] outline outline-1 outline-[#FC813C] my-1"
       onSubmit={(event) => {
         event.preventDefault();
-        router.push(
-          `/results/${searchInput}/${sortOrder}`
-        );
+        router.push(`/results/${searchInput}/${sortOrder}`);
       }}
     >
       <FaSearch />
@@ -35,8 +33,8 @@ function SearchBar(props) {
           setSortOrder(event.target.value);
         }}
       >
-        <option value="recency">Newest</option>
         <option value="relevancy">Most Popular</option>
+        <option value="recency">Newest</option>
       </select>
     </form>
   );

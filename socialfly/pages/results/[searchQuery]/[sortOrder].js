@@ -64,7 +64,7 @@ export default function Results() {
                 Current Query: {searchQuery}
               </h1>
               <h3 className="font-montserrat">
-                Number of Tweets: {response.numTweets}
+                Number of Tweets: {response.numTweets}, based on {sortOrder}.
               </h3>
             </div>
           </div>

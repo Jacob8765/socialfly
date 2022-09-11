@@ -25,12 +25,12 @@ export function getBubbleData(tweetData) {
     datasets: [
       {
         label: "Positive",
-        backgroundColor: "#FC813C",
+        backgroundColor: "#50A5DC",
         data: positiveData,
       },
       {
         label: "Negative",
-        backgroundColor: "#50A5DC",
+        backgroundColor: "#FC813C",
         data: negativeData,
       },
       {
