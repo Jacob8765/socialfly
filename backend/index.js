@@ -103,7 +103,7 @@ app.get("/getUserSentiment", async (req, res) => {
     if (response.data.data) {
       response.data.data.map(async tweet => {
         analysis = await analyzeTweet(tweet.text) //analyze each tweet and add the result to the average
-        aggregateSentimate += sentimate.score / response.data.data.length
+        aggregateSentimate += analysis.score / response.data.data.length
       })
     }
   }).catch((e) => {
