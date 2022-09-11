@@ -27,36 +27,13 @@ export default function Results() {
   let { positiveLikes, negativeLikes } = getNumberLikes(response);
   let { positiveRetweets, negativeRetweets } = getNumberRetweets(response);
 
-  async function getData() {
-    let url = `http://localhost:8000/getTweets?keywords=${searchQuery}&sort=${sortOrder}`;
-    if (searchQuery[0] == "@") {
-      //if the query is a username...
-      url = `http://localhost:8000/getTweets?username=${searchQuery.substring(
-        1
-      )}&sort=${sortOrder}`;
-    }
-
-    try {
-      let rawResponse = await axios.get(url);
-      setLoading(true);
-      if (rawResponse) {
-        setLoading(false);
-      }
-      setResponse(rawResponse.data);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    getData();
-  }, [router.isReady]);
-
-  return (
-    <main className="bg-bage min-h-screen flex flex-col pl-10 pr-10">
-      {!loading && (
+  function returnDashboard() {
+    if (loading) {
+      return <div className="flex justify-center items-center h-screen">
+        <h1 className="text-7xl font-bold">Loading...</h1>
+      </div>
+    } else {
+      return (
         <>
           <div className="bg-white max-w-[1920px] p-3 mb-2">
             <div className="w-fit">
@@ -120,7 +97,40 @@ export default function Results() {
             </div>
           </section>
         </>
-      )}
+      );
+    }
+  }
+
+  async function getData() {
+    let url = `http://localhost:8000/getTweets?keywords=${searchQuery}&sort=${sortOrder}`;
+    if (searchQuery[0] == "@") {
+      //if the query is a username...
+      url = `http://localhost:8000/getTweets?username=${searchQuery.substring(
+        1
+      )}&sort=${sortOrder}`;
+    }
+
+    try {
+      setLoading(true);
+      let rawResponse = await axios.get(url);
+      if (rawResponse) {
+        setLoading(false);
+      }
+      setResponse(rawResponse.data);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    getData();
+  }, [router.isReady]);
+
+  return (
+    <main className="bg-bage min-h-screen flex flex-col pl-10 pr-10">
+      {returnDashboard()}
     </main>
   );
 }
