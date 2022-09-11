@@ -1,8 +1,9 @@
 const express = require("express")
 const axios = require("axios")
 const natural = require("natural")
-const { preProcess, findMostRelevantKeywords } = require("./util.js")
+const { preProcess, findMostRelevantKeywords, parseKeywords } = require("./util.js")
 const cors = require("cors")
+
 
 //const API_SECRET = "FLARGffUCG6uvE0LbT21q4I5YPyLw2UAqbb1fkU1PpvQSpmKuk"
 //const API_KEY = "WVP6eAVUNaHHf3w7NSY0FxBGo"
@@ -10,23 +11,20 @@ const BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAMasgwEAAAAA3gWGg7zbD%2BpENv2AN0qEW61K
 
 const app = express()
 app.use(cors())
+const model = null
 
 //takes in a string, outputs a sentiment score between -1 and 1
 const analyzeTweet = async (tweet) => {
-  let preProcessedTweet = preProcess(tweet)
-  let keywords = []
-
-  const Sentianalyzer = new natural.SentimentAnalyzer('English', natural.PorterStemmer, 'afinn');
-  const analysis_score = Sentianalyzer.getSentiment(preProcessedTweet);
-  
-  preProcessedTweet.map((word, i) => {
-    let score = Sentianalyzer.getSentiment([word])
-    if (word.length > 5 && i > 0 && (score == 0 && Math.abs(Sentianalyzer.getSentiment([preProcessedTweet[i-1]])) >= 0.9)) {
-      keywords.push(word)
-    }
+  tweet = preProcess(tweet)
+  let score = await axios.get("http://localhost:7070/" + tweet).then((res) => {
+    console.log(res.data)
+    return parseFloat(res.data)
+  }).catch(e => {
+    console.log(e)
+    throw e
   })
 
-  return {score: Math.tanh(analysis_score*2), keywords}
+  return score
 }
 
 //uses twitter api, to get tweets that have the keywords passed in
@@ -45,15 +43,13 @@ const getTweets = async (keywords, sort="recency", username=undefined) => {
     let negativeKeywords = []
 
     for (let i = 0; i < response.length; i++){
-      let analysis = await analyzeTweet(response[i].text);
-      let sentiment = analysis.score
-      let key = analysis.keywords
+      let sentiment = await analyzeTweet(response[i].text);
       averageSentiment += sentiment / response.length
 
-      if (sentiment >= 0.3) {
-        positiveKeywords = positiveKeywords.concat(key)
-      } else if (sentiment <= -0.3) {
-        negativeKeywords = negativeKeywords.concat(key)
+      if (sentiment >= 0.6) {
+        positiveKeywords = positiveKeywords.concat(parseKeywords(response[i].text))
+      } else if (sentiment <= -0.6) {
+        negativeKeywords = negativeKeywords.concat(parseKeywords(response[i].text))
       }
       response[i].sentiment = sentiment; 
     }
@@ -86,32 +82,6 @@ app.get("/getTweets", async (req, res) => {
   }
 })
 
-//gets the keywords and calls the latesttweets function by passing the keywords
-/*app.get("/getUserSentiment", async (req, res) => {
-  const username = req.query.username
-  const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${username} lang:en -is:retweet&tweet.fields=text`
-  console.log(url)
-
-  let aggregateSentimate = 0 //average of the user's most recent 100 posts
-  await axios.get(url, {
-    headers: {
-      authorization: `Bearer ${BEARER_TOKEN}`,
-    }
-  })
-  .then(async (response) => {
-    if (response.data.data) {
-      response.data.data.map(async tweet => {
-        analysis = await analyzeTweet(tweet.text) //analyze each tweet and add the result to the average
-        aggregateSentimate += analysis.score / response.data.data.length
-      })
-    }
-  }).catch((e) => {
-    throw e
-  })
-
-  res.send({aggregateSentimate})
-})*/
-
 // route to test the sentiment score by typing an arbtrary string
 app.get("/testSentiment", async (req, res) => {
   let sentiment = await analyzeTweet(req.query.text);
@@ -120,5 +90,6 @@ app.get("/testSentiment", async (req, res) => {
 
 //starts server
 app.listen(8000, async () => {
+  await analyzeTweet("test")
   console.log("app live on port 8000")
 })
