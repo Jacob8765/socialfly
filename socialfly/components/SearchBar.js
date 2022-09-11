@@ -17,7 +17,7 @@ function SearchBar(props) {
       onSubmit={(event) => {
         event.preventDefault();
         router.push(
-          `/results/${searchInput.split(" ").join(",")}/${sortOrder}`
+          `/results/${searchInput}/${sortOrder}`
         );
       }}
     >
@@ -27,7 +27,7 @@ function SearchBar(props) {
           setSearchInput(event.target.value);
         }}
         type="text"
-        placeholder="Insert your query here..."
+        placeholder="Enter a username or keywords..."
         className="mx-3 flex flex-grow outline-none text-[#FC813C]"
       />
       <select

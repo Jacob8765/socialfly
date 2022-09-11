@@ -28,9 +28,14 @@ export default function Results() {
   let { positiveRetweets, negativeRetweets } = getNumberRetweets(response);
 
   async function getData() {
+    let url = `http://localhost:8000/getTweets?keywords=${searchQuery}&sort=${sortOrder}`
+    if (searchQuery[0] == "@") { //if the query is a username...
+      url = `http://localhost:8000/getTweets?username=${searchQuery.substring(1)}&sort=${sortOrder}`
+    }
+
     try {
       let rawResponse = await axios.get(
-        `http://localhost:8000/getTweets?keywords=${searchQuery}&sort=${sortOrder}`
+        url
       );
       setLoading(true);
       if (rawResponse) {
