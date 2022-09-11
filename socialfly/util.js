@@ -36,8 +36,6 @@ export function getBubbleData(tweetData) {
     ]
   }
 
-  console.log("Got chart data", chartData)
-
   return chartData
 }
 

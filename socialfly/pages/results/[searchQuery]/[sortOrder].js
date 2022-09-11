@@ -7,6 +7,7 @@ import {
   getNumNeutral,
   getNumberLikes,
   getNumberRetweets,
+  getBubbleData,
 } from "../../../util";
 
 import axios from "axios";
@@ -14,6 +15,7 @@ import axios from "axios";
 import CommonWords from "../../../components/CommonWords";
 import DonutChart from "../../../components/DonutChart";
 import BarGraph from "../../../components/BarGraph";
+import BubbleChart from "../../../components/BubbleChart";
 
 export default function Results() {
   const router = useRouter();
@@ -67,6 +69,7 @@ export default function Results() {
                 getNumNegative(response),
               ]}
             />
+            <BubbleChart data={getBubbleData(response)} />
             <div className="space-y-2 grid justify-around row-span-2">
               <CommonWords
                 data={response.negativeKeywords}
