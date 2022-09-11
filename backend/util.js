@@ -65,7 +65,7 @@ const wordDict = {
 }
 
 const preProcess = text => {
-  let data = text.toLowerCase().replace(/[^a-zA-Z\s]+/g, '').replace(/(?:https?|ftp):\/\/[\n\S]+/g, '').replace(/(?<!\w)@[\w+]{1,15}\b/, '').split(' ');
+  let data = text.toLowerCase().replace(/[^a-zA-Z\s]+/g, '').replace(/(?:https?|ftp):\/\/[\n\S]+/g, '').replace("\\", "").replace(/(?<!\w)@[\w+]{1,15}\b/, '').split(' ');
   data.forEach((word, index) => {
       Object.keys(wordDict).forEach(key => {
           if (key === word.toLowerCase()) {
