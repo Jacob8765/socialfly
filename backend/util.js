@@ -1,5 +1,6 @@
 const stopword = require("stopword");
-const natural = require("natural")
+const natural = require("natural");
+const { mainModule } = require("process");
   
 // For conversion of contractions to standard lexicon
 const wordDict = {
@@ -86,4 +87,17 @@ const preProcess = text => {
   return filteredData
 }
 
-module.exports = {preProcess}
+const findMostRelevantKeywords = (keywords) => {
+    const sorted = keywords.sort()
+    let res = []
+
+    for (let i = 0; i < Math.min(7, sorted.length); i++) {
+        if (i == 0 || sorted[i] != sorted[i-1]) {
+            res.push(sorted[i])
+        }
+    }
+
+    return res
+}
+
+module.exports = {preProcess, findMostRelevantKeywords}
