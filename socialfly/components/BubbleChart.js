@@ -15,7 +15,7 @@ export default function BubbleChart(props) {
     plugins: {
       title: {
         display: true,
-        text: "Engagement vs Rating",
+        text: props.title,
       },
     },
     scales: {

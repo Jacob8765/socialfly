@@ -25,7 +25,17 @@ function Polar(props) {
 
   return (
     <div className="bg-white">
-      <PolarArea data={data} />
+      <PolarArea
+        data={data}
+        options={{
+          plugins: {
+            title: {
+              display: true,
+              text: props.title,
+            },
+          },
+        }}
+      />
     </div>
   );
 }

@@ -69,7 +69,10 @@ export default function Results() {
                 getNumNegative(response),
               ]}
             />
-            <BubbleChart data={getBubbleData(response)} />
+            <BubbleChart
+              data={getBubbleData(response)}
+              title="Engagement vs Rating"
+            />
 
             <PolarChart
               data={[
@@ -85,6 +88,7 @@ export default function Results() {
                 "Negative Tweet Retweets",
               ]}
               backgroundColor={["#50A5DC", "#FC813C", "#50A5DC", "#FC813C"]}
+              title="Engagement Numbers"
             />
 
             <div className="space-y-2 grid justify-around row-span-2">
