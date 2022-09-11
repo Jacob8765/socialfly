@@ -17,7 +17,7 @@ function TestChart(props) {
   };
 
   return (
-    <div className="bg-white max-w-[300px] h-fit">
+    <div className="bg-white max-w-[300px] h-fill flex flex-col justify-center items-center">
       <Doughnut
         data={data}
         options={{
