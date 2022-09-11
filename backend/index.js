@@ -1,7 +1,7 @@
 const express = require("express")
 const axios = require("axios")
 const natural = require("natural")
-const {preProcess, findMostRelevantKeywords} = require("./util.js")
+const { preProcess, findMostRelevantKeywords } = require("./util.js")
 const cors = require("cors")
 
 //const API_SECRET = "FLARGffUCG6uvE0LbT21q4I5YPyLw2UAqbb1fkU1PpvQSpmKuk"
@@ -30,28 +30,27 @@ const analyzeTweet = async (tweet) => {
   return {score: Math.tanh(analysis_score*2), keywords}
 }
 
-//uses twitter api, to get the latest tweets that have the keywords passed in
-const getLatestTweets = async (keywords, type="recent") => {
-  const url = `https://api.twitter.com/2/tweets/search/${type}?query=${keywords} lang:en&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id&max_results=50`
+//uses twitter api, to get tweets that have the keywords passed in
+const getTweets = async (keywords, sort="recent") => {
+  const url = `https://api.twitter.com/2/tweets/search/${sort}?query=${keywords} lang:en&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id&max_results=50`
 
-  let res = axios.get(url, {
+  let res = await axios.get(url, {
     headers: {
       authorization: `Bearer ${BEARER_TOKEN}`,
     }
   })
   .then(async function (res) {
     let response = res.data.data
-    let sum = 0;
+    let averageSentiment = 0;
     let positiveKeywords = []
     let negativeKeywords = []
 
-
-    for (i=0; i<response.length; i++){
+    for (let i = 0; i < response.length; i++){
       let analysis = await analyzeTweet(response[i].text);
       let sentiment = analysis.score
       let key = analysis.keywords
+      averageSentiment += sentiment / response.length
 
-      console.log(sentiment, key)
       if (sentiment >= 0.3) {
         console.log("adding to positive", key)
         positiveKeywords = positiveKeywords.concat(key)
@@ -60,11 +59,9 @@ const getLatestTweets = async (keywords, type="recent") => {
         negativeKeywords = negativeKeywords.concat(key)
       }
       response[i].sentiment = sentiment; 
-      sum += sentiment;
     }
 
-    sum /= response.length
-    return {...response, aggregateSentimate: sum, numTweets: response.length, positiveKeywords: findMostRelevantKeywords(positiveKeywords), negativeKeywords: findMostRelevantKeywords(negativeKeywords)};
+    return {...response, averageSentiment, numTweets: response.length, positiveKeywords: findMostRelevantKeywords(positiveKeywords), negativeKeywords: findMostRelevantKeywords(negativeKeywords)};
   })
   .catch(function (error) {
     console.log(error);
@@ -75,17 +72,17 @@ const getLatestTweets = async (keywords, type="recent") => {
 }
 
 app.get("/", async (req, res) => {
-  res.json({status: 200, version: 0.1})
+  res.json({status: 200, version: 0.2})
 })
 
 //gets the keywords and calls the latesttweets function by passing the keywords
 app.get("/getTweets", async (req, res) => {
-  console.log(req.query.keywords)
   let keywords = req.query.keywords.replace(",", " ")
+  let sort = req.query.sort
 
   try {
-    const response = await getLatestTweets(keywords)
-    res.json(response)
+    const tweets = await getTweets(keywords, sort)
+    res.json(tweets)
   } catch {
     res.sendStatus(500)
   }
@@ -93,23 +90,22 @@ app.get("/getTweets", async (req, res) => {
 
 //gets the keywords and calls the latesttweets function by passing the keywords
 app.get("/getUserSentiment", async (req, res) => {
-  let username = req.query.username
+  const username = req.query.username
   const url = `https://api.twitter.com/2/tweets/search/recent?query=from:${username} lang:en&tweet.fields=text`
 
-  let aggregateSentimate = 0
+  let aggregateSentimate = 0 //average of the user's most recent 100 posts
   await axios.get(url, {
     headers: {
       authorization: `Bearer ${BEARER_TOKEN}`,
     }
   })
   .then(async (response) => {
-    console.log(response.data)
-    response.data.data.map(async tweet => {
-      sentimate = await analyzeTweet(tweet.text)
-      console.log(tweet.text, sentimate)
-      aggregateSentimate += sentimate / response.data.data.length
-    })
-    return aggregateSentimate
+    if (response.data.data) {
+      response.data.data.map(async tweet => {
+        analysis = await analyzeTweet(tweet.text) //analyze each tweet and add the result to the average
+        aggregateSentimate += sentimate.score / response.data.data.length
+      })
+    }
   }).catch((e) => {
     throw e
   })
