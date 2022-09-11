@@ -22,7 +22,6 @@ const analyzeTweet = async (tweet) => {
   preProcessedTweet.map((word, i) => {
     let score = Sentianalyzer.getSentiment([word])
     if (word.length > 5 && i > 0 && (score == 0 && Math.abs(Sentianalyzer.getSentiment([preProcessedTweet[i-1]])) >= 0.9)) {
-      console.log("adding to keywords", word)
       keywords.push(word)
     }
   })
@@ -32,7 +31,7 @@ const analyzeTweet = async (tweet) => {
 
 //uses twitter api, to get tweets that have the keywords passed in
 const getTweets = async (keywords, sort="recency", username=undefined) => {
-  const url = `https://api.twitter.com/2/tweets/search/recent?query=${keywords ? keywords : 'from:' + username} lang:en&sort_order=${sort}&tweet.fields=geo,public_metrics,text&expansions=attachments.media_keys,attachments.poll_ids,author_id,entities.mentions.username,geo.place_id,in_reply_to_user_id,referenced_tweets.id,referenced_tweets.id.author_id&place.fields=country,geo,id&max_results=50`
+  const url = `https://api.twitter.com/2/tweets/search/recent?query=${keywords ? keywords : 'from:' + username} lang:en&sort_order=${sort}&tweet.fields=public_metrics,text&max_results=100`
 
   let res = await axios.get(url, {
     headers: {
@@ -52,10 +51,8 @@ const getTweets = async (keywords, sort="recency", username=undefined) => {
       averageSentiment += sentiment / response.length
 
       if (sentiment >= 0.3) {
-        console.log("adding to positive", key)
         positiveKeywords = positiveKeywords.concat(key)
       } else if (sentiment <= -0.3) {
-        console.log("adding to negative", key)
         negativeKeywords = negativeKeywords.concat(key)
       }
       response[i].sentiment = sentiment; 

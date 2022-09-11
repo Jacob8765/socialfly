@@ -66,11 +66,6 @@ const wordDict = {
 }
 
 const preProcess = text => {
-    if (text.toLowerCase().indexOf("http") != -1) {
-        console.log("has link", text)
-        console.log("after replacement", text.toLowerCase().replace(/(?:https?|ftp):\/\/[\n\S]+/g, ''))
-    }
-  console.log(text.toLowerCase())
   let data = text.toLowerCase().replace(/[^a-zA-Z\s]+/g, '').replace(/(?:https?|ftp):\/\/[\n\S]+/g, '').replace(/(?<!\w)@[\w+]{1,15}\b/, '').split(' ');
   data.forEach((word, index) => {
       Object.keys(wordDict).forEach(key => {
@@ -88,8 +83,6 @@ const preProcess = text => {
 
   // Remove Stopwords
   const filteredData = stopword.removeStopwords(tokenizedData);
-  //console.log("After removing stopwords: ",filteredData);
-
   return filteredData
 }
 
